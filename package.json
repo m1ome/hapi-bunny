@@ -1,0 +1,46 @@
+{
+  "name": "happi-bunny",
+  "version": "1.0.0",
+  "description": "Hapi.js bunyan integration",
+  "main": "index.js",
+  "scripts": {
+    "test": "xo --ignore='test.js' && nyc mocha",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m1ome/hapi-bunny.git"
+  },
+  "keywords": [
+    "hapi",
+    "bunyan",
+    "logger",
+    "fast",
+    "json",
+    "interface"
+  ],
+  "author": "Pavel Makarenko <cryfall@gmail.com>",
+  "engines": {
+    "node": ">=4"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/m1ome/hapi-bunny/issues"
+  },
+  "homepage": "https://github.com/m1ome/hapi-bunny",
+  "dependencies": {
+    "bunyan": "^1.8.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "hapi": "^13.4.1",
+    "nyc": "^6.4.4",
+    "xo": "^0.15.1",
+    "coveralls": "^2.11.9"
+  },
+  "xo": {
+    "envs": [
+      "node"
+    ]
+  }
+}

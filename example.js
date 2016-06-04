@@ -1,29 +1,3 @@
-# Hapi-Bunny
-
-[![Build Status](https://travis-ci.org/m1ome/hapi-bunny.svg?branch=master)](https://travis-ci.org/m1ome/hapi-bunny)
-[![Coverage Status](https://coveralls.io/repos/github/m1ome/hapi-bunny/badge.svg?branch=master)](https://coveralls.io/github/m1ome/hapi-bunny?branch=master)
-[![Dependency Status](https://david-dm.org/m1ome/hapi-bunny.svg)](https://david-dm.org/m1ome/hapi-bunny)
-
-[Hapi](http://hapijs.com/) plugin for the [Bunyan](https://github.com/trentm/node-bunyan) logger. 
-It logs in JSON for easy post-processing.
-
-# Installation
-
-```
-npm install --save hapi-bunny
-``` 
-
-# Usage
-
-```javascript
-'use strict'
-
-const Hapi = require('hapi')
-
-const server = new Hapi.Server()
-server.connection({port: 3000});
-
-// Add the route
 'use strict';
 
 const Hapi = require('hapi');
@@ -63,7 +37,3 @@ server.register(require('hapi-bunny'), (err) => {
 		}
 	});
 });
-```
-
-# License 
-MIT
