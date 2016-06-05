@@ -29,7 +29,7 @@ function randomString() {
 
 function createServer() {
 	const server = new Hapi.Server();
-	server.connection({port: 3000});
+	server.connection({ port: 3000 });
 	return server;
 }
 
@@ -162,7 +162,7 @@ describe('Logging through server.log()', () => {
 
 		it('should send some unknown level to "info" level', () => {
 			const server = createServer();
-			
+
 			registerWithBunny(server, options, (err) => {
 				const rndMessage = randomString();
 				expect(server.logger()).to.not.be.undefined;
@@ -173,6 +173,75 @@ describe('Logging through server.log()', () => {
 				expect(msg).to.have.all.keys(['name', 'hostname', 'pid', 'level', 'msg', 'time', 'v']);
 				expect(msg.msg).to.be.contain(rndMessage);
 				expect(msg.msg).to.be.contain('some_strange_level');
+			});
+		});
+	});
+});
+
+describe("Hapi request logging", () => {
+	it("it should handle request logging though request.logger", () => {
+		const rndMessage = randomString();
+		const catcher = new Catcher();
+		const server = createServer();
+
+		const options = {
+			streams: [
+				{
+					type: 'raw',
+					stream: catcher,
+					level: 'trace'
+				}
+			]
+		};
+
+		server.route({
+			path: '/',
+			method: 'GET',
+			handler: (request, reply) => {
+				request.logger.info(rndMessage);
+				return reply('hello world');
+			}
+		});
+
+		registerWithBunny(server, options, (err) => {
+			server.inject('/', (res) => {
+				const records = res.request.logger.streams[0].stream.records;
+				expect(records.length).to.be.equal(2);
+				expect(records[0]).to.have.any.keys(['msg', 'request']);
+				expect(records[1]).to.have.any.keys(['response', 'responseTime', 'request']);
+			});
+		});
+	});
+
+	it("should track request error", () => {
+		const rndMessage = randomString();
+		const catcher = new Catcher();
+		const server = createServer();
+
+		const options = {
+			streams: [
+				{
+					type: 'raw',
+					stream: catcher,
+					level: 'trace'
+				}
+			]
+		};
+
+		server.route({
+			path: '/',
+			method: 'GET',
+			handler: (request, reply) => {
+				return reply(new Error('Boom!'));
+			}
+		});
+
+		registerWithBunny(server, options, (err) => {
+			server.inject('/', (res) => {
+				const records = res.request.logger.streams[0].stream.records;
+				expect(records.length).to.be.equal(2);
+				expect(records[0]).to.have.any.keys(['error', 'response']);
+				expect(records[1]).to.have.any.keys(['response', 'responseTime', 'request']);
 			});
 		});
 	});
