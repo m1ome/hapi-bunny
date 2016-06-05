@@ -1,7 +1,10 @@
 'use strict';
 
 const Hapi = require('hapi');
+const HapiBunny = require('.');
 const server = new Hapi.Server();
+
+server.connection({port: 3050});
 
 server.route({
 	method: 'GET',
@@ -13,11 +16,11 @@ server.route({
 		// you can also use a bunyan instance
 		request.logger.info('In handler %s', request.path);
 
-		return reply();
+		return reply('hello!');
 	}
 });
 
-server.register(require('hapi-bunny'), (err) => {
+server.register(HapiBunny, (err) => {
 	if (err) {
 		throw err;
 	}

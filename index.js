@@ -39,13 +39,17 @@ function register(server, options, next) {
 		const inf = request.info;
 
 		request.logger.info({
+			request: {
+				ip: inf.remoteAddress,
+				referer: inf.referrer,
+				path: request.response.request.path,
+				headers: request.response.request.headers
+			},
 			response: {
-				statusCode: request.raw.res.statusCode,
-				headers: request.raw.res._headers,
-				output: request.raw.res.output
+				statusCode: request.response.statusCode
 			},
 			responseTime: inf.responded - inf.received
-		}, 'request complete');
+		}, 'Request');
 	});
 
 	function logEvent(curLogger, event) {

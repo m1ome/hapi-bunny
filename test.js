@@ -198,6 +198,7 @@ describe("Hapi request logging", () => {
 			path: '/',
 			method: 'GET',
 			handler: (request, reply) => {
+				request.log(['a', 'b'], rndMessage);
 				request.logger.info(rndMessage);
 				return reply('hello world');
 			}
@@ -206,7 +207,7 @@ describe("Hapi request logging", () => {
 		registerWithBunny(server, options, (err) => {
 			server.inject('/', (res) => {
 				const records = res.request.logger.streams[0].stream.records;
-				expect(records.length).to.be.equal(2);
+				expect(records.length).to.be.equal(3);
 				expect(records[0]).to.have.any.keys(['msg', 'request']);
 				expect(records[1]).to.have.any.keys(['response', 'responseTime', 'request']);
 			});
