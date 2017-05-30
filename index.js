@@ -56,13 +56,9 @@ function register(server, options, next) {
 		const tags = event.tags;
 		const data = event.data;
 
-		for (var i = 0; i < tags.length; i++) {
-			if (bunyanLevels.indexOf(tags[i]) !== -1) {
-				curLogger[tags[i]](tags, data);
-			}
-		}
-
-		curLogger.info(tags, data);
+		// Check if tags contain a valid log level, first match wins (default: 'info')
+		const level = tags.filter(tag => bunyanLevels.indexOf(tag) !== -1)[0] || 'info';
+		curLogger[level]({tags}, data);
 	}
 
 	return next();
