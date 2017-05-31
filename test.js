@@ -140,9 +140,9 @@ describe('Logging through server.log()', () => {
 
 					const msg = catcher.pop();
 					expect(msg).to.be.not.undefined;
-					expect(msg).to.have.all.keys(['name', 'hostname', 'pid', 'level', 'msg', 'time', 'v']);
+					expect(msg).to.have.all.keys(['name', 'hostname', 'pid', 'level', 'msg', 'tags', 'time', 'v']);
 					expect(msg.msg).to.be.contain(rndMessage);
-					expect(msg.msg).to.be.contain(level);
+					expect(msg.tags).to.be.contain(level);
 				});
 			});
 		}
@@ -170,9 +170,9 @@ describe('Logging through server.log()', () => {
 
 				const msg = catcher.pop();
 				expect(msg).to.be.not.undefined;
-				expect(msg).to.have.all.keys(['name', 'hostname', 'pid', 'level', 'msg', 'time', 'v']);
+				expect(msg).to.have.all.keys(['name', 'hostname', 'pid', 'level', 'msg', 'tags', 'time', 'v']);
 				expect(msg.msg).to.be.contain(rndMessage);
-				expect(msg.msg).to.be.contain('some_strange_level');
+				expect(msg.tags).to.be.contain('some_strange_level');
 			});
 		});
 	});
