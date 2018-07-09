@@ -2,7 +2,7 @@
 
 const bunyan = require('bunyan');
 
-function register(server, options, next) {
+function register(server, options) {
 	options.name = options.name || 'hapi';
 
 	const logger = bunyan.createLogger(options);
@@ -11,20 +11,20 @@ function register(server, options, next) {
 	server.app.logger = logger;
 	server.decorate('server', 'logger', () => logger);
 
-	server.ext('onRequest', (request, reply) => {
+	server.ext('onRequest', (request, h) => {
 		request.logger = logger.child({request: request.id});
-		reply.continue();
+		return h.continue;
 	});
 
-	server.on('log', (event) => {
+	server.events.on('log', event => {
 		logEvent(logger, event);
 	});
 
-	server.on('request', (request, event) => {
+	server.events.on('request', (request, event) => {
 		logEvent(request.logger, event);
 	});
 
-	server.on('request-error', (request, event) => {
+	server.events.on({name: 'request', channels: 'error'}, (request, event) => {
 		request.logger.warn({
 			response: {
 				statusCode: request.raw.res.statusCode,
@@ -35,7 +35,7 @@ function register(server, options, next) {
 		}, 'request error');
 	});
 
-	server.on('response', (request) => {
+	server.events.on('response', request => {
 		const inf = request.info;
 
 		request.logger.info({
@@ -53,18 +53,15 @@ function register(server, options, next) {
 	});
 
 	function logEvent(curLogger, event) {
-		const tags = event.tags;
-		const data = event.data;
+		const {tags, data} = event;
 
 		// Check if tags contain a valid log level, first match wins (default: 'info')
 		const level = tags.filter(tag => bunyanLevels.indexOf(tag) !== -1)[0] || 'info';
 		curLogger[level]({tags}, data);
 	}
-
-	return next();
 }
 
-module.exports.register = register;
-module.exports.register.attributes = {
-	pkg: require('./package')
+exports.plugin = {
+	pkg: require('./package'),
+	register
 };

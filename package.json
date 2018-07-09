@@ -1,6 +1,6 @@
 {
   "name": "hapi-bunny",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Hapi.js bunyan integration",
   "main": "index.js",
   "scripts": {
@@ -32,12 +32,12 @@
     "bunyan": "^1.8.1"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "hapi": "^13.4.1",
-    "nyc": "^6.4.4",
-    "xo": "^0.15.1",
-    "coveralls": "^2.11.9",
-    "mocha": "^2.5.3"
+    "chai": "^4.1.2",
+    "coveralls": "^3.0.2",
+    "hapi": "^17.5.2",
+    "mocha": "^5.2.0",
+    "nyc": "^12.0.2",
+    "xo": "^0.21.1"
   },
   "xo": {
     "envs": [
