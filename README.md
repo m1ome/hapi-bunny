@@ -16,53 +16,43 @@ npm install --save hapi-bunny
 # Usage
 
 ```javascript
-'use strict'
-
-const Hapi = require('hapi')
-
-const server = new Hapi.Server()
-server.connection({port: 3000});
-
-// Add the route
 'use strict';
 
 const Hapi = require('hapi');
-const server = new Hapi.Server();
+const HapiBunny = require('.');
+
+const server = Hapi.server({port: 3050});
 
 server.route({
-	method: 'GET',
-	path: '/',
-	handler: function (request, reply) {
-		// request.log is HAPI standard way of logging
-		request.log(['a', 'b'], 'Request into hello world');
+  method: 'GET',
+  path: '/',
+  handler: (request, h) => {
+    // `request.log` is Hapi standard way of logging
+    request.log(['a', 'b'], 'Request into hello world');
 
-		// you can also use a bunyan instance
-		request.logger.info('In handler %s', request.path);
+    // You can also use a bunyan instance
+    request.logger.info('In handler %s', request.path);
 
-		return reply();
-	}
+    return h.response('hello!');
+  }
 });
 
-server.register(require('hapi-bunny'), (err) => {
-	if (err) {
-		throw err;
-	}
+async function startup() {
+  await server.register(HapiBunny);
 
-	// the logger is available in server.app
-	server.app.logger.warn('Bunyan is registered');
+  // The logger is available in server.app
+  server.app.logger.warn('Bunyan is registered');
 
-	// also as a decorated API
-	server.logger().info('another way for accessing it');
+  // Also as a decorated API
+  server.logger().info('another way for accessing it');
 
-	// and through Hapi standard logging system
-	server.log(['subsystem'], 'one more way for accessing it');
+  // And through Hapi standard logging system
+  server.log(['subsystem'], 'one more way for accessing it');
 
-	server.start((err) => {
-		if (err) {
-			throw err;
-		}
-	});
-});
+  await server.start();
+}
+
+startup();
 ```
 
 # License 
